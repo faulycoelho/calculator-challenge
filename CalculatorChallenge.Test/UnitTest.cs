@@ -7,7 +7,7 @@ namespace CalculatorChallenge.Test
         [Fact]
         public void Execute_WithSingleNumber_ShouldReturnThatNumber()
         {
-            Engine.CalculatorEngine engine = new ();
+            Engine.CalculatorEngine engine = new();
             engine.Execute("20").Should().Be(20);
         }
 
@@ -21,7 +21,14 @@ namespace CalculatorChallenge.Test
         public void Execute_WithNegativeNumber_ShouldIncludeItInTheSum()
         {
             Engine.CalculatorEngine engine = new();
-            engine.Execute("4,-3").Should().Be(1);
+            Action act = () => engine.Execute("4,-3,-4,-9");
+
+            act
+                .Should()
+                .Throw<InvalidOperationException>()
+                .Which.Message
+                .Should()
+                .ContainAll("-3");
         }
 
         [Fact]
@@ -36,6 +43,20 @@ namespace CalculatorChallenge.Test
         {
             Engine.CalculatorEngine engine = new();
             engine.Execute(" 1\n2,3").Should().Be(6);
+        }
+
+        [Fact]
+        public void Execute_NegativeNumbers_ShouldThrowException()
+        {
+            Engine.CalculatorEngine engine = new();
+            Action act = () => engine.Execute("4,-3,-4,-9");
+
+            act
+                .Should()
+                .Throw<InvalidOperationException>()
+                .Which.Message
+                .Should()
+                .ContainAll("-3", "-4", "-9");
         }
     }
 }

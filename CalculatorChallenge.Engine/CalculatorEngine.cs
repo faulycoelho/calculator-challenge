@@ -8,8 +8,30 @@ namespace CalculatorChallenge.Engine
         {
             var span = input.AsSpan();
             var numbers = GetNumbersFromSpan(span);
+            ValidateNumbers(numbers);
             return numbers.Sum();
         }
+
+        private void ValidateNumbers(List<int> numbers)
+        {
+            List<int>? invalidNumbers = null;
+
+            foreach (var n in numbers)
+            {
+                if (n < 0)
+                {
+                    invalidNumbers ??= new List<int>();
+                    invalidNumbers.Add(n);
+                }
+            }
+
+            if (invalidNumbers is not null)
+            {
+                throw new InvalidOperationException(
+                    $"Negatives not allowed: {string.Join(", ", invalidNumbers)}");
+            }
+        }
+
 
         private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
@@ -36,7 +58,6 @@ namespace CalculatorChallenge.Engine
                 if (!token.IsEmpty)
                 {
                     numbers.Add(TryParseOrZero(token));
-
                 }
             }
             return numbers;
