@@ -42,17 +42,24 @@ namespace CalculatorChallenge.Engine
             {
                 var end = span.IndexOf('\n');
                 if (end > 2 && span[2] == '[' && span[end - 1] == ']')
-                {
-                    var customDelimiter = span.Slice(3, end - 4).ToString();
-                    delimiters.Add(customDelimiter);
-                    span = span[(end + 1)..];
+                {                 
+                    var customDelimiters = span.Slice(2, end - 2);
+                    while (!customDelimiters.IsEmpty)
+                    {
+                        var customDelimiterEnd = customDelimiters.IndexOf(']');
+                        var customDelimiter = customDelimiters.Slice(1, customDelimiterEnd - 1).ToString();
+                        delimiters.Add(customDelimiter);
+                        customDelimiters = customDelimiters.Slice(customDelimiterEnd+1);
+                    }
                 }
                 else
                 {
                     var delimiter = span.Slice(2, end - 2);
-                    if (delimiter.Length == 1)
-                        delimiters.Add(delimiter.ToString());
+                    if (delimiter.Length == 1)                    
+                        delimiters.Add(delimiter.ToString());                    
                 }
+
+                span = span[(end + 1)..];
             }
 
 

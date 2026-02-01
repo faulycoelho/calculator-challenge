@@ -83,5 +83,12 @@ namespace CalculatorChallenge.Test
             Engine.CalculatorEngine engine = new();
             engine.Execute("//[***]\n11***22***33").Should().Be(66);            
         }
+
+        [Fact]
+        public void Execute_MultipleCustomDelimiterOfAnyLength_ShouldSplitNumbers()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("//[*][!!][r9r]\n11r9r22*hh*33!!44 ").Should().Be(110);
+        }
     }
 }
