@@ -32,15 +32,24 @@ namespace CalculatorChallenge.Engine
             }
         }
         private const int MAX_NUMBER_ALLOWED = 1000;
-
+       
         private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
             List<int> numbers = new List<int>();
-            ReadOnlySpan<char> delimiters = stackalloc char[] { ',', '\n' };
+            var delimiters = new List<char>() { ',', '\n' };
+
+            if (span.StartsWith("//") && span.IndexOf('\n') > 2)
+            {
+                var end = span.IndexOf('\n');
+                var delimiter = span.Slice(2, end - 2);
+                if (delimiter.Length == 1)
+                    delimiters.Add(delimiter[0]);
+            }
+
 
             while (!span.IsEmpty)
             {
-                int index = span.IndexOfAny(delimiters);
+                int index = span.IndexOfAny(delimiters.ToArray());
 
                 ReadOnlySpan<char> token;
                 if (index < 0)

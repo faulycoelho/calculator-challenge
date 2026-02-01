@@ -66,5 +66,15 @@ namespace CalculatorChallenge.Test
             Engine.CalculatorEngine engine = new();
             engine.Execute("2,1001,6").Should().Be(8);
         }
+
+
+
+        [Fact]
+        public void Execute_CustomDelimiter_ShouldSplitNumbers()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("//#\n2#5").Should().Be(7);
+            engine.Execute("//,\n2,ff,100").Should().Be(102);
+        }
     }
 }
