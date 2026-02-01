@@ -24,14 +24,11 @@ namespace CalculatorChallenge.Test
             engine.Execute("4,-3").Should().Be(1);
         }
 
-
         [Fact]
-        public void Execute_WithMoreThanTwoNumbers_ShouldThrowException()
+        public void Execute_WithUnlimitedNumbers_ShouldReturnTheirSum()
         {
-            var engine = new Engine.CalculatorEngine();
-
-            Assert.Throws<InvalidOperationException>(() =>
-                engine.Execute("4,-3,4"));
-        }
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("1,2,3,4,5,6,7,8,9,10,11,12").Should().Be(78);
+        }        
     }
 }

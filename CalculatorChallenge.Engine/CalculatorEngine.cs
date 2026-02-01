@@ -7,12 +7,7 @@ namespace CalculatorChallenge.Engine
         public int Execute(string? input)
         {
             var span = input.AsSpan();
-            var numbers = GetNumbersFromSpan(span);
-            if (numbers.Count > 2)
-            {
-                throw new InvalidOperationException("Too many numbers provided. Maximum allowed is 2.");
-            }
-
+            var numbers = GetNumbersFromSpan(span);          
             return numbers.Sum();
         }
 
