@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="CalculatorChallenge.Engine/CalculatorChallenge.Engine.csproj" />
+  <Project Path="CalculatorChallenge.Test/CalculatorChallenge.Test.csproj" />
   <Project Path="CalculatorChallenge/CalculatorChallenge.csproj" />
 </Solution>
