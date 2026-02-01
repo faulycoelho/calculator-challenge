@@ -1,28 +1,34 @@
 ﻿using CalculatorChallenge.Engine.Configuration;
-using CalculatorChallenge.Engine.Extensions;
 using CalculatorChallenge.Engine.Interface;
 
-namespace CalculatorChallenge.Engine
+namespace CalculatorChallenge.Engine.Operation
 {
-    internal class CalculatorEngine : ICalculator
+    public abstract class CalculatorEngineBase : ICalculator
     {
         private readonly ConfigurationOption configurationOption;
-        public CalculatorEngine(ConfigurationOption? customConfigurationOption = null)
+        public CalculatorEngineBase(ConfigurationOption? customConfigurationOption = null)
         {
             configurationOption = customConfigurationOption ?? new ConfigurationOption();
         }
 
+        protected abstract char OperatorSymbol { get; }
+        protected abstract int ApplyCalc(IReadOnlyList<int> numbers);
+        protected virtual string BuildFormula(
+               IReadOnlyList<int> numbers,
+               int result)
+               => $"{string.Join(OperatorSymbol, numbers)} = {result}";
+
         public int Execute(string? input)
         {
             var numbers = ParseInputGetNumbers(input);
-            return numbers.Sum();
+            return ApplyCalc(numbers);
         }
 
         public int Execute(string? input, out string formula)
         {
             var numbers = ParseInputGetNumbers(input);
-            var result = numbers.Sum();
-            formula = $"{string.Join("+", numbers)} = {result}";
+            var result = ApplyCalc(numbers);
+            formula = $"{string.Join(OperatorSymbol, numbers)} = {result}";
             return result;
         }
 

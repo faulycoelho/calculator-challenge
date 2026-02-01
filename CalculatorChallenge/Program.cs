@@ -33,7 +33,7 @@ while (true)
     Console.WriteLine("Enter your data:");
     var input = Console.ReadLine();
     var factory = provider.GetRequiredService<ICalculatorFactory>();
-    var engine = factory.CreateCalculator(ConfiguratoinOption);
+    var engine = factory.CreateCalculator(Enums.CalculatorOperationType.Sum, ConfiguratoinOption);
     var result = engine.Execute(input);
     Console.WriteLine($"Result: {result}");
     Console.WriteLine();
