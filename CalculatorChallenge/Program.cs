@@ -1,4 +1,12 @@
-﻿
+﻿using CalculatorChallenge.Engine;
+using CalculatorChallenge.Engine.Interface;
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+services.AddSingleton<ICalculatorFactory, CalculatorFactory>();
+
+var provider = services.BuildServiceProvider();
+
 if (args.Contains("--help"))
 {
     ShowHelp();
@@ -24,7 +32,8 @@ while (true)
 {
     Console.WriteLine("Enter your data:");
     var input = Console.ReadLine();
-    var engine = new CalculatorChallenge.Engine.CalculatorEngine(ConfiguratoinOption);
+    var factory = provider.GetRequiredService<ICalculatorFactory>();
+    var engine = factory.CreateCalculator(ConfiguratoinOption);
     var result = engine.Execute(input);
     Console.WriteLine($"Result: {result}");
     Console.WriteLine();

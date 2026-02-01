@@ -1,9 +1,10 @@
 ﻿using CalculatorChallenge.Engine.Configuration;
 using CalculatorChallenge.Engine.Extensions;
+using CalculatorChallenge.Engine.Interface;
 
 namespace CalculatorChallenge.Engine
 {
-    public class CalculatorEngine
+    internal class CalculatorEngine : ICalculator
     {
         private readonly ConfigurationOption configurationOption;
         public CalculatorEngine(ConfigurationOption? customConfigurationOption = null)
