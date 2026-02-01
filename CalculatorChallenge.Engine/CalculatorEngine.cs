@@ -54,7 +54,7 @@ namespace CalculatorChallenge.Engine
 
             if (span.StartsWith("//"))
             {
-                var end = span.IndexOf('\n');
+                int end = TryFindNewLineEscape(span, out bool byDoubleSlash);
                 if (end > 2 && span[2] == '[' && span[end - 1] == ']')
                 {
                     var customDelimiters = span.Slice(2, end - 2);
@@ -73,7 +73,7 @@ namespace CalculatorChallenge.Engine
                         delimiters.Add(delimiter.ToString());
                 }
 
-                span = span[(end + 1)..];
+                span = span[(end + (byDoubleSlash ? 2 : 1))..];
             }
 
 
@@ -83,11 +83,15 @@ namespace CalculatorChallenge.Engine
                 int delimiterLength = 1;
                 foreach (var delimiter in delimiters)
                 {
-                    int delimiterIndex = span.IndexOf(delimiter);
+                    bool byDoubleSlash = false;
+                    int delimiterIndex = delimiter == "\n".AsSpan()
+                        ? TryFindNewLineEscape(span, out byDoubleSlash)
+                        : span.IndexOf(delimiter);
+
                     if (delimiterIndex > -1 && (index == -1 || delimiterIndex < index))
                     {
                         index = delimiterIndex;
-                        delimiterLength = delimiter.Length;
+                        delimiterLength = delimiter.Length + (byDoubleSlash ? 1 : 0);
                     }
                 }
 
@@ -111,6 +115,23 @@ namespace CalculatorChallenge.Engine
                     numbers.Add(number);
             }
             return numbers;
+        }
+
+        private static int TryFindNewLineEscape(ReadOnlySpan<char> span, out bool ByDoubleSlash)
+        {
+            ByDoubleSlash = false;
+            var index = span.IndexOf('\n');
+            if (index == -1)
+            {
+                int backslashIndex = span.IndexOf('\\');
+                if (backslashIndex != -1 && backslashIndex + 1 < span.Length && span[backslashIndex + 1] == 'n')
+                {
+                    index = backslashIndex;
+                    ByDoubleSlash = true;
+                }
+            }
+
+            return index;
         }
 
         private static int TryParseOrZero(ReadOnlySpan<char> input)
