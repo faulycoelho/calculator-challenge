@@ -76,5 +76,12 @@ namespace CalculatorChallenge.Test
             engine.Execute("//#\n2#5").Should().Be(7);
             engine.Execute("//,\n2,ff,100").Should().Be(102);
         }
+
+        [Fact]
+        public void Execute_CustomDelimiterOfAnyLength_ShouldSplitNumbers()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("//[***]\n11***22***33").Should().Be(66);            
+        }
     }
 }

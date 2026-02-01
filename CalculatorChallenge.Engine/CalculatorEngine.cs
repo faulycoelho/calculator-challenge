@@ -32,24 +32,43 @@ namespace CalculatorChallenge.Engine
             }
         }
         private const int MAX_NUMBER_ALLOWED = 1000;
-       
+
         private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
             List<int> numbers = new List<int>();
-            var delimiters = new List<char>() { ',', '\n' };
+            var delimiters = new List<string>() { ",", "\n" };
 
-            if (span.StartsWith("//") && span.IndexOf('\n') > 2)
+            if (span.StartsWith("//"))
             {
                 var end = span.IndexOf('\n');
-                var delimiter = span.Slice(2, end - 2);
-                if (delimiter.Length == 1)
-                    delimiters.Add(delimiter[0]);
+                if (end > 2 && span[2] == '[' && span[end - 1] == ']')
+                {
+                    var customDelimiter = span.Slice(3, end - 4).ToString();
+                    delimiters.Add(customDelimiter);
+                    span = span[(end + 1)..];
+                }
+                else
+                {
+                    var delimiter = span.Slice(2, end - 2);
+                    if (delimiter.Length == 1)
+                        delimiters.Add(delimiter.ToString());
+                }
             }
 
 
             while (!span.IsEmpty)
             {
-                int index = span.IndexOfAny(delimiters.ToArray());
+                int index = -1;
+                int delimiterLength = 1;
+                foreach (var delimiter in delimiters)
+                {
+                    int delimiterIndex = span.IndexOf(delimiter);
+                    if (delimiterIndex > 0 && (index == -1 || delimiterIndex < index))
+                    {
+                        index = delimiterIndex;
+                        delimiterLength = delimiter.Length;
+                    }
+                }
 
                 ReadOnlySpan<char> token;
                 if (index < 0)
@@ -60,7 +79,7 @@ namespace CalculatorChallenge.Engine
                 else
                 {
                     token = span[..index];
-                    span = span[(index + 1)..];
+                    span = span[(index + delimiterLength)..];
                 }
 
                 token = token.Trim();
