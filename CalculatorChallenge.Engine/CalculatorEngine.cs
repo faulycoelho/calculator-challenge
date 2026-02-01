@@ -31,7 +31,7 @@ namespace CalculatorChallenge.Engine
                     $"Negatives not allowed: {string.Join(", ", invalidNumbers)}");
             }
         }
-
+        private const int MAX_NUMBER_ALLOWED = 1000;
 
         private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
@@ -57,7 +57,11 @@ namespace CalculatorChallenge.Engine
                 token = token.Trim();
                 if (!token.IsEmpty)
                 {
-                    numbers.Add(TryParseOrZero(token));
+                    var number = TryParseOrZero(token);
+                    if (number > MAX_NUMBER_ALLOWED)
+                        numbers.Add(0);
+                    else
+                        numbers.Add(number);
                 }
             }
             return numbers;

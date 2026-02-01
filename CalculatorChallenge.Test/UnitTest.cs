@@ -12,10 +12,10 @@ namespace CalculatorChallenge.Test
         }
 
         [Fact]
-        public void Execute_WithTwoNumbersSeparatedByComma_ShouldReturnTheirSum()
+        public void Execute_WithTwoNumbersSeparatedByComma_ShouldReturnTheirSumAndIgnoreGreaterThan1000()
         {
             Engine.CalculatorEngine engine = new();
-            engine.Execute("1,5000").Should().Be(5001);
+            engine.Execute("1,5000").Should().Be(1);
         }
         [Fact]
         public void Execute_WithNegativeNumber_ShouldIncludeItInTheSum()
@@ -42,7 +42,7 @@ namespace CalculatorChallenge.Test
         public void Execute_WithTwoNumbersSeparatedByCommaOrNewLine_ShouldReturnTheirSum()
         {
             Engine.CalculatorEngine engine = new();
-            engine.Execute(" 1\n2,3").Should().Be(6);
+            engine.Execute("1\n2,3").Should().Be(6);
         }
 
         [Fact]
@@ -57,6 +57,14 @@ namespace CalculatorChallenge.Test
                 .Which.Message
                 .Should()
                 .ContainAll("-3", "-4", "-9");
+        }
+
+
+        [Fact]
+        public void Execute_ShouldIgnoreValueGreatheThan1000()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("2,1001,6").Should().Be(8);
         }
     }
 }
