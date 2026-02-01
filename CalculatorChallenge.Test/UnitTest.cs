@@ -88,7 +88,16 @@ namespace CalculatorChallenge.Test
         public void Execute_MultipleCustomDelimiterOfAnyLength_ShouldSplitNumbers()
         {
             Engine.CalculatorEngine engine = new();
-            engine.Execute("//[*][!!][r9r]\n11r9r22*hh*33!!44 ").Should().Be(110);
+            engine.Execute("//[*][!!][r9r]\n11r9r22*hh*33!!44").Should().Be(110);
+        }
+
+
+        [Fact]
+        public void Execute_DisplayFormula()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute("2,,4,rrrr,1001,6", out string formula).Should().Be(12);
+            formula.Should().Be("2+0+4+0+0+6 = 12");
         }
     }
 }

@@ -6,10 +6,24 @@ namespace CalculatorChallenge.Engine
     {
         public int Execute(string? input)
         {
+            var numbers = ParseInputGetNumbers(input);
+            return numbers.Sum();
+        }
+
+        public int Execute(string? input, out string formula)
+        {
+            var numbers = ParseInputGetNumbers(input);
+            var result = numbers.Sum();
+            formula = $"{string.Join("+", numbers)} = {result}";
+            return result;
+        }
+
+        private List<int> ParseInputGetNumbers(string? input)
+        {
             var span = input.AsSpan();
             var numbers = GetNumbersFromSpan(span);
             ValidateNumbers(numbers);
-            return numbers.Sum();
+            return numbers;
         }
 
         private void ValidateNumbers(List<int> numbers)
@@ -42,21 +56,21 @@ namespace CalculatorChallenge.Engine
             {
                 var end = span.IndexOf('\n');
                 if (end > 2 && span[2] == '[' && span[end - 1] == ']')
-                {                 
+                {
                     var customDelimiters = span.Slice(2, end - 2);
                     while (!customDelimiters.IsEmpty)
                     {
                         var customDelimiterEnd = customDelimiters.IndexOf(']');
                         var customDelimiter = customDelimiters.Slice(1, customDelimiterEnd - 1).ToString();
                         delimiters.Add(customDelimiter);
-                        customDelimiters = customDelimiters.Slice(customDelimiterEnd+1);
+                        customDelimiters = customDelimiters.Slice(customDelimiterEnd + 1);
                     }
                 }
                 else
                 {
                     var delimiter = span.Slice(2, end - 2);
-                    if (delimiter.Length == 1)                    
-                        delimiters.Add(delimiter.ToString());                    
+                    if (delimiter.Length == 1)
+                        delimiters.Add(delimiter.ToString());
                 }
 
                 span = span[(end + 1)..];
@@ -70,7 +84,7 @@ namespace CalculatorChallenge.Engine
                 foreach (var delimiter in delimiters)
                 {
                     int delimiterIndex = span.IndexOf(delimiter);
-                    if (delimiterIndex > 0 && (index == -1 || delimiterIndex < index))
+                    if (delimiterIndex > -1 && (index == -1 || delimiterIndex < index))
                     {
                         index = delimiterIndex;
                         delimiterLength = delimiter.Length;
@@ -90,14 +104,11 @@ namespace CalculatorChallenge.Engine
                 }
 
                 token = token.Trim();
-                if (!token.IsEmpty)
-                {
-                    var number = TryParseOrZero(token);
-                    if (number > MAX_NUMBER_ALLOWED)
-                        numbers.Add(0);
-                    else
-                        numbers.Add(number);
-                }
+                var number = TryParseOrZero(token);
+                if (number > MAX_NUMBER_ALLOWED)
+                    numbers.Add(0);
+                else
+                    numbers.Add(number);
             }
             return numbers;
         }
