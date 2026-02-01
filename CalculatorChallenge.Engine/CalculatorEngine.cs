@@ -1,9 +1,16 @@
-﻿using CalculatorChallenge.Engine.Extensions;
+﻿using CalculatorChallenge.Engine.Configuration;
+using CalculatorChallenge.Engine.Extensions;
 
 namespace CalculatorChallenge.Engine
 {
     public class CalculatorEngine
     {
+        private readonly ConfigurationOption configurationOption;
+        public CalculatorEngine(ConfigurationOption? customConfigurationOption = null)
+        {
+            configurationOption = customConfigurationOption ?? new ConfigurationOption();
+        }
+
         public int Execute(string? input)
         {
             var numbers = ParseInputGetNumbers(input);
@@ -22,11 +29,15 @@ namespace CalculatorChallenge.Engine
         {
             var span = input.AsSpan();
             var numbers = GetNumbersFromSpan(span);
-            ValidateNumbers(numbers);
+            if (configurationOption.DenyNegatives)
+            {
+                ValidateNegativeNumbers(numbers);
+            }
+
             return numbers;
         }
 
-        private void ValidateNumbers(List<int> numbers)
+        private void ValidateNegativeNumbers(List<int> numbers)
         {
             List<int>? invalidNumbers = null;
 
@@ -45,12 +56,11 @@ namespace CalculatorChallenge.Engine
                     $"Negatives not allowed: {string.Join(", ", invalidNumbers)}");
             }
         }
-        private const int MAX_NUMBER_ALLOWED = 1000;
 
-        private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
+        private List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
             List<int> numbers = new List<int>();
-            var delimiters = new List<string>() { ",", "\n" };
+            var delimiters = new List<string>() { ",", configurationOption.AlternativeDelimiter };
 
             if (span.StartsWith("//"))
             {
@@ -109,7 +119,7 @@ namespace CalculatorChallenge.Engine
 
                 token = token.Trim();
                 var number = TryParseOrZero(token);
-                if (number > MAX_NUMBER_ALLOWED)
+                if (number > configurationOption.UpperBound)
                     numbers.Add(0);
                 else
                     numbers.Add(number);
