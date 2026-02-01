@@ -29,6 +29,13 @@ namespace CalculatorChallenge.Test
         {
             Engine.CalculatorEngine engine = new();
             engine.Execute("1,2,3,4,5,6,7,8,9,10,11,12").Should().Be(78);
-        }        
+        }
+
+        [Fact]
+        public void Execute_WithTwoNumbersSeparatedByCommaOrNewLine_ShouldReturnTheirSum()
+        {
+            Engine.CalculatorEngine engine = new();
+            engine.Execute(" 1\n2,3").Should().Be(6);
+        }
     }
 }

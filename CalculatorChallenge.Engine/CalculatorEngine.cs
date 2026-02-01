@@ -7,18 +7,18 @@ namespace CalculatorChallenge.Engine
         public int Execute(string? input)
         {
             var span = input.AsSpan();
-            var numbers = GetNumbersFromSpan(span);          
+            var numbers = GetNumbersFromSpan(span);
             return numbers.Sum();
         }
 
         private static List<int> GetNumbersFromSpan(ReadOnlySpan<char> span)
         {
             List<int> numbers = new List<int>();
-            char delimiter = ',';
+            ReadOnlySpan<char> delimiters = stackalloc char[] { ',', '\n' };
 
             while (!span.IsEmpty)
             {
-                int index = span.IndexOf(delimiter);
+                int index = span.IndexOfAny(delimiters);
 
                 ReadOnlySpan<char> token;
                 if (index < 0)
